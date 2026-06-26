@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MUTAGENT — Hackathon Quickstart</title>
+<style>
+  :root{
+    --bg:#0a0710; --bg2:#120c1d; --panel:#170f26; --panel2:#1d1430;
+    --violet:#7C3AED; --violet-l:#a78bfa; --cyan:#06B6D4; --cyan-l:#67e8f9;
+    --ink:#ece8f6; --muted:#9389ac; --line:#2c2142;
+    --grad:linear-gradient(125deg,#7C3AED 0%,#06B6D4 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Inter",-apple-system,"Helvetica Neue",Arial,sans-serif;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4 landscape;margin:0;}
+  code,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+
+  .slide{position:relative;width:297mm;height:210mm;padding:16mm 18mm 14mm;
+    page-break-after:always;overflow:hidden;
+    background:radial-gradient(1200px 600px at 85% -10%,rgba(124,58,237,.20),transparent 60%),
+               radial-gradient(900px 500px at 0% 110%,rgba(6,182,212,.14),transparent 55%),
+               var(--bg);}
+  .slide:last-child{page-break-after:auto;}
+
+  /* top chrome */
+  .top{display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:18px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.18em;font-size:13px;}
+  .brand .wm{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .pg{color:var(--muted);font-size:12px;letter-spacing:.12em;font-weight:600;}
+
+  h1.title{font-size:34px;font-weight:800;line-height:1.05;margin:6px 0 4px;}
+  h1.title .n{color:#ffffff;}
+  .strip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:16px 0 2px}
+  .strip .s{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 13px;font-size:12.5px;font-weight:800;letter-spacing:.04em;color:var(--ink)}
+  .strip .ar{color:var(--violet-l);font-weight:800;font-size:14px}
+  .strip .lp{color:var(--cyan-l);font-size:11.5px;margin-left:8px;font-weight:600}
+  table.stages{width:100%;border-collapse:collapse;margin-top:8px}
+  table.stages td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  table.stages tr:last-child td{border-bottom:none}
+  table.stages .st{font-weight:800;font-size:13.5px;color:var(--ink);white-space:nowrap;letter-spacing:.03em}
+  table.stages .cmd{font-family:ui-monospace,Menlo,monospace;color:var(--violet-l);font-size:12.5px;white-space:nowrap}
+  table.stages .desc{color:var(--muted);font-size:13px}
+  .sub{color:var(--muted);font-size:15px;margin-bottom:22px;max-width:62ch;}
+
+  /* cover */
+  .cover{display:flex;flex-direction:column;justify-content:center;height:100%;align-items:flex-start;gap:18px;}
+  .wordmark{font-size:92px;font-weight:900;letter-spacing:.05em;line-height:.92;color:#ffffff;
+    filter:drop-shadow(0 8px 36px rgba(124,58,237,.50));}
+  .brand .mark{width:20px;height:20px;display:block}
+  .cover .logo{width:104px;height:104px;display:block;filter:drop-shadow(0 10px 40px rgba(124,58,237,.5))}
+  .tagline{font-size:22px;color:var(--cyan-l);letter-spacing:.04em;font-weight:600;}
+  .lede{font-size:16px;color:var(--muted);max-width:70ch;line-height:1.5;}
+  .pillrow{display:flex;gap:10px;margin-top:8px;}
+  .pill{border:1px solid var(--line);background:var(--panel);border-radius:999px;
+    padding:7px 15px;font-size:12.5px;color:var(--ink);letter-spacing:.06em;font-weight:600;}
+  .pill b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* cards / panels */
+  .grid{display:grid;gap:14px;}
+  .card{background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+    border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;}
+  .card h3{font-size:15px;font-weight:800;letter-spacing:.04em;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .card p{font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.14em;
+    color:var(--cyan-l);border:1px solid var(--cyan);border-radius:6px;padding:2px 8px;}
+  .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--grad);color:#0a0710;font-weight:900;font-size:15px;flex:none;}
+
+  /* say bubble + produces chip */
+  .say{background:rgba(124,58,237,.08);border:1px solid var(--line);border-left:3px solid var(--violet);
+    border-radius:10px;padding:11px 14px;margin-top:10px;}
+  .say .lbl{font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--violet-l);margin-bottom:6px;}
+  .say em{display:block;font-style:normal;color:var(--ink);font-size:13px;line-height:1.7;}
+  .say em::before{content:"“";color:var(--violet-l);} .say em::after{content:"”";color:var(--violet-l);}
+  .produces{margin-top:12px;display:flex;align-items:center;gap:10px;font-size:13px;}
+  .produces .pk{font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--muted);}
+  .chip{background:var(--grad);color:#0a0710;font-weight:800;font-size:12.5px;border-radius:8px;padding:5px 11px;}
+
+  /* terminal */
+  .term{background:#0d0916;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .term .bar{display:flex;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line);background:#120c1d;}
+  .term .bar i{width:11px;height:11px;border-radius:50%;display:block;}
+  .term .bar i:nth-child(1){background:#ff5f57}.term .bar i:nth-child(2){background:#febc2e}.term .bar i:nth-child(3){background:#28c840}
+  .term pre{padding:14px 16px;font-size:12.5px;line-height:1.55;color:#cfc6e6;white-space:pre;}
+  .term .v{color:var(--violet-l)} .term .c{color:var(--cyan-l)} .term .m{color:var(--muted)} .term .g{color:#7ee0a0}
+
+  .two{grid-template-columns:1fr 1fr;}
+  .three{grid-template-columns:1fr 1fr 1fr;}
+  .row{display:flex;gap:18px;align-items:stretch;}
+  .flex1{flex:1}
+  .footnote{position:absolute;bottom:9mm;left:18mm;right:18mm;color:var(--muted);font-size:11px;
+    border-top:1px solid var(--line);padding-top:8px;display:flex;justify-content:space-between;}
+  svg{display:block}
+</style>
+</head>
+<body>
+
+<!-- ░░░ COVER ░░░ -->
+<section class="slide">
+  <div class="cover">
+    <img class="logo" src="mutagent-logo.svg" alt="Mutagent">
+    <div class="wordmark">MUTAGENT</div>
+    <div class="tagline">Agentic Development Lifecycle · Hackathon Quickstart</div>
+    <div class="lede">Build an AI agent, prove it works, find out why it fails, and fix it —
+      all from Helix — one conversational orchestrator that routes to specialized subagents. This guide takes you from clone to your first agent.</div>
+    <div class="pillrow">
+      <span class="pill"><b>①</b> Spec</span><span class="pill"><b>②</b> Build</span>
+      <span class="pill"><b>③</b> Evaluate</span><span class="pill"><b>④</b> Diagnose</span>
+      <span class="pill"><b>⑤</b> Improve</span>
+    </div>
+  </div>
+  <div class="footnote"><span>mutagent.io</span><span>Quickstart v1</span></div>
+</section>
+
+<!-- ░░░ THE CHALLENGE ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">HACKATHON CHALLENGE</div></div>
+  <h1 class="title"><span class="n">🏆 The Challenge</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— build the most sophisticated agent, prove it works</span></h1>
+
+  <div class="card" style="margin-top:14px;border-color:var(--violet)">
+    <h3 style="font-size:16px">Build &amp; evaluate the most sophisticated AI agent you can</h3>
+    <p style="font-size:14px;margin-top:5px">End-to-end through the Mutagent framework, in any harness/framework — <b style="color:var(--ink)">Mastra · LangGraph · Claude Code · Codex</b>. Run <code>*spec → *build → *evaluate</code> and prove it works with a real eval set. The more ambitious and capable — real jobs, tools, integrations, triggers — the better.</p>
+    <div class="produces" style="margin-top:13px"><span class="chip">🏆 BONUS · Extend the Lifecycle</span><span style="color:var(--muted);font-size:13px">add a new ADL stage / <code>*command</code> / skill that cleanly fits Helix</span></div>
+  </div>
+
+  <div class="row" style="margin-top:14px">
+    <div class="card flex1" style="flex:1.25">
+      <h3>Judging Criteria</h3>
+      <table class="stages">
+        <tr><td class="st">1 ·</td><td class="desc"><b style="color:var(--ink)">Sophistication of the agent</b> — ambition &amp; complexity: jobs, tools, triggers, real integrations</td></tr>
+        <tr><td class="st">2 ·</td><td class="desc"><b style="color:var(--ink)">Loop completeness</b> — <span class="cmd" style="color:var(--violet-l)">*spec → *build → *evaluate</span> (diagnose/improve count more)</td></tr>
+        <tr><td class="st">3 ·</td><td class="desc"><b style="color:var(--ink)">Proof it works</b> — eval criteria + a real dataset (≥20) + a scorecard</td></tr>
+        <tr><td class="st">🏆</td><td class="desc"><b style="color:var(--ink)">Framework extension</b> <i>(bonus)</i> — does your new command/stage work + fit?</td></tr>
+      </table>
+    </div>
+    <div class="card flex1">
+      <h3 style="color:var(--cyan-l)">Delivery</h3>
+      <p style="font-size:14px;margin-top:2px"><b style="color:var(--ink)">Agent code</b> left on the <code>mutagent-hackathon</code> codebase.</p>
+      <p style="font-size:14px;margin-top:9px"><b style="color:var(--ink)">Orchestrator (Helix) + subagent session transcripts — required.</b></p>
+      <p style="font-size:13px;margin-top:5px;color:var(--muted)">These <i>are</i> your submission — they serve as both <b style="color:var(--ink)">framework feedback</b> and <b style="color:var(--ink)">proof you used the system</b>. 😉</p>
+    </div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Hackathon Challenge</span></div>
+</section>
+
+<!-- ░░░ 1 · QUICK START ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">QUICK START · 1 / 7</div></div>
+  <h1 class="title"><span class="n">①</span> Quick Start <span style="font-size:18px;color:var(--muted);font-weight:600">— zero to orchestrator in 3 steps</span></h1>
+  <div class="grid three" style="margin-top:16px">
+    <div class="card">
+      <h3><span class="num">1</span> Clone</h3>
+      <p>Grab the public hackathon repo.</p>
+      <div class="term" style="margin-top:12px"><pre><span class="m">$</span> git clone <span class="c">github.com/mutagent-io/
+  mutagent-hackathon</span>
+<span class="m">$</span> cd mutagent-hackathon</pre></div>
+    </div>
+    <div class="card">
+      <h3><span class="num">2</span> Install the system</h3>
+      <p>Installs the agents + skills into <code>.claude/</code> and <code>.codex/</code>.</p>
+      <div class="term" style="margin-top:12px"><pre><span class="m">$</span> bunx <span class="v">@mutagent/helix</span> init
+  <span class="m"># or npx / pnpx</span></pre></div>
+    </div>
+    <div class="card">
+      <h3><span class="num">3</span> Boot</h3>
+      <p>Start your coding agent, then summon the orchestrator.</p>
+      <div class="term" style="margin-top:12px"><pre><span class="m">$</span> claude   <span class="m"># or codex</span>
+<span class="v">❯</span> mutagent
+<span class="m">→ dashboard · lifecycle ·
+  what you can do</span></pre></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>What you'll see — the booted orchestrator</h3>
+    <div class="term" style="margin-top:10px"><div class="bar"><i></i><i></i><i></i></div><pre><span class="v">❯</span> mutagent
+
+<span class="c">🧬  M U T A G E N T</span>   <span class="m">· ADL Orchestrator — Helix routes to your subagents</span>
+<span class="m">──────────────────────────────────────────────────────────────────────</span>
+  <span class="v">LIFECYCLE</span>   ① SPEC → ② BUILD → ③ EVALUATE → ④ DIAGNOSE → ⑤ IMPROVE
+  <span class="v">SYSTEM</span>      agentspec · skill-builder · evaluator · diagnostics
+  <span class="v">SETUP</span>       <span class="g" style="color:#febc2e">⚠ not onboarded yet — run *onboard</span>
+<span class="m">──────────────────────────────────────────────────────────────────────</span>
+  <span class="v">COMMANDS</span>    <span class="c">*spec   *build   *evaluate   *diagnose   *onboard   *status</span>
+  <span class="m">Type a *command — or just say what you want.</span></pre></div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Quick Start</span></div>
+</section>
+
+<!-- ░░░ 2 · HOW IT WORKS ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">HOW IT WORKS · 2 / 7</div></div>
+  <h1 class="title">How it works <span style="font-size:18px;color:var(--muted);font-weight:600">— one orchestrator, many subagents</span></h1>
+  <p class="sub">Helix is the one orchestrator — it routes each stage to a specialized subagent. Jump in anywhere; nothing moves on without you.</p>
+
+  <div class="strip">
+    <span class="s">① SPEC</span><span class="ar">→</span>
+    <span class="s">② BUILD</span><span class="ar">→</span>
+    <span class="s">③ EVALUATE</span><span class="ar">→</span>
+    <span class="s">④ DIAGNOSE</span><span class="ar">→</span>
+    <span class="s">⑤ IMPROVE</span>
+    <span class="lp">… then loops back to ② build — until it passes</span>
+  </div>
+
+  <div class="row" style="margin-top:16px">
+    <div class="card" style="flex:1.55">
+      <h3>Drive the lifecycle — say a stage, or just what you want</h3>
+      <table class="stages">
+        <tr><td class="st">① SPEC</td><td class="cmd">*spec</td><td class="desc">describe your agent → a validated spec file</td></tr>
+        <tr><td class="st">② BUILD</td><td class="cmd">*build</td><td class="desc">turn the spec into a working agent</td></tr>
+        <tr><td class="st">③ EVALUATE</td><td class="cmd">*evaluate</td><td class="desc">check how good it is — pass / fail per behavior</td></tr>
+        <tr><td class="st">④ DIAGNOSE</td><td class="cmd">*diagnose</td><td class="desc">find out why it failed — ranked fixes</td></tr>
+        <tr><td class="st">⑤ IMPROVE</td><td class="cmd">gated</td><td class="desc">apply the fix, then re-check — until it passes</td></tr>
+      </table>
+    </div>
+    <div class="card flex1">
+      <h3 style="color:var(--cyan-l)">First time? — <code>*onboard</code></h3>
+      <p>Add your provider keys, pick your workspace, and choose your models. Then jump into any stage.</p>
+      <div class="say"><div class="lbl">💬 YOU CAN SAY</div>
+        <em>set me up with my Anthropic and GitHub keys</em>
+        <em>what agents and skills do we have?</em></div>
+      <p style="margin-top:12px"><b style="color:var(--ink)">Two ways to drive it:</b> type a <code>*command</code>, or just say what you want — Helix routes it to the right stage and waits for you.</p>
+    </div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>How it works</span></div>
+</section>
+
+<!-- ░░░ 3 · SPEC ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">SPEC · 3 / 7</div></div>
+  <h1 class="title"><span class="n">③ Spec</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— turn an idea into a working spec</span></h1>
+  <p class="sub">A short guided interview captures <b>what</b> your agent is, then writes a spec file you can build from. You answer with quick pick-lists.</p>
+  <div class="row">
+    <div class="card flex1" style="flex:1.3">
+      <div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="v">❯</span> *spec
+<span class="c">🧬</span> What agent do you want to build?
+<span class="v">❯</span> A Mastra agent that triages our support
+  inbox and drafts replies for approval.
+<span class="c">🧬</span> <span class="m">⟨pick-lists⟩</span> what kind? · how should it
+   talk to your tools?
+<span class="v">❯</span> <span class="m">⟨taps options⟩</span>
+<span class="c">🧬</span> wrote your spec <span class="g">✓</span> — next: *build
+   <span class="m">(I won't move on without you)</span></pre></div>
+    </div>
+    <div class="card flex1">
+      <h3>The flow</h3>
+      <p>Describe it → answer a few forks → get a validated spec. Edit the spec later and re-build; changes flow one way (spec → agent).</p>
+      <div class="say"><div class="lbl">💬 YOU CAN SAY</div>
+        <em>design a new agent that triages our support inbox</em>
+        <em>spec out a research agent that benchmarks our models</em>
+        <em>I want to build an agent that reviews pull requests</em></div>
+      <div class="produces"><span class="pk">📦 PRODUCES</span><span class="chip">your agent spec · agentspec.yaml</span></div>
+    </div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Spec</span></div>
+</section>
+
+<!-- ░░░ 4 · BUILD ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">BUILD · 4 / 7</div></div>
+  <h1 class="title"><span class="n">④ Build</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— your spec becomes a real, working agent</span></h1>
+
+  <svg width="100%" viewBox="0 0 1000 150" style="margin-top:4px">
+    <defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient>
+      <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#a78bfa"/></marker></defs>
+    <g font-family="Inter,sans-serif" font-size="13" fill="#ece8f6">
+      <rect x="6" y="40" width="150" height="66" rx="12" fill="#170f26" stroke="url(#bg2)" stroke-width="2"/>
+      <text x="81" y="68" text-anchor="middle" font-weight="800">your spec</text><text x="81" y="88" text-anchor="middle" font-size="11" fill="#9389ac">agentspec.yaml</text>
+      <rect x="216" y="26" width="280" height="94" rx="12" fill="#170f26" stroke="url(#bg2)" stroke-width="2"/>
+      <text x="356" y="50" text-anchor="middle" font-weight="800" fill="#a78bfa">Mutagent build engine</text>
+      <text x="356" y="72" text-anchor="middle" font-size="12" fill="#cfc6e6">reads the framework's latest docs</text>
+      <text x="356" y="90" text-anchor="middle" font-size="12" fill="#cfc6e6">writes the agent + tests · fixes till green</text>
+      <text x="356" y="108" text-anchor="middle" font-size="11" fill="#9389ac">uses the exact model you picked</text>
+      <rect x="556" y="40" width="190" height="66" rx="12" fill="#1a1430" stroke="#06B6D4" stroke-width="2"/>
+      <text x="651" y="66" text-anchor="middle" font-weight="800" fill="#67e8f9">reviewer</text><text x="651" y="86" text-anchor="middle" font-size="11" fill="#9389ac">matches your spec?</text>
+      <rect x="806" y="40" width="188" height="66" rx="12" fill="#170f26" stroke="url(#bg2)" stroke-width="2"/>
+      <text x="900" y="66" text-anchor="middle" font-weight="800">working agent</text><text x="900" y="86" text-anchor="middle" font-size="11" fill="#7ee0a0">✓ ready</text>
+      <line x1="158" y1="73" x2="212" y2="73" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ar2)"/>
+      <line x1="498" y1="73" x2="552" y2="73" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ar2)"/>
+      <line x1="748" y1="73" x2="802" y2="73" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ar2)"/>
+    </g>
+  </svg>
+
+  <div class="row" style="margin-top:16px">
+    <div class="card flex1"><h3>What the reviewer checks</h3>
+      <p>A second pass confirms the build is faithful to your spec — every capability you asked for is actually there — before you move on. No silent gaps.</p></div>
+    <div class="card flex1">
+      <div class="say"><div class="lbl">💬 YOU CAN SAY</div>
+        <em>build the agent I just spec'd</em>
+        <em>implement my support-triage spec into Mastra</em>
+        <em>generate the code for the support-triage agent</em></div>
+      <div class="produces"><span class="pk">📦 PRODUCES</span><span class="chip">a working agent (the code) + a build report</span></div>
+    </div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Build</span></div>
+</section>
+
+<!-- ░░░ 5 · EVALUATE ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">EVALUATE · 5 / 7</div></div>
+  <h1 class="title"><span class="n">⑤ Evaluate</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— four ways to know if your agent is good</span></h1>
+  <div class="grid two" style="margin-top:14px;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card"><h3><span class="tag">FIND</span> Find new evals</h3>
+      <p>Looks at your agent's runs and suggests what's worth testing.</p>
+      <div class="say"><em>find evals for the PR-review agent from its recent runs</em></div>
+      <div class="produces"><span class="pk">📦</span><span class="chip">suggested evals + a starter test set</span></div></div>
+    <div class="card" style="border-color:var(--cyan)"><h3><span class="tag">SCORE</span> Evaluate it</h3>
+      <p>Scores your agent's runs → a clear <b>pass / fail</b> per behavior.
+        <br><span style="color:var(--cyan-l)">Built-in</span> judge (no setup) · or a test-suite that runs in <span style="color:var(--cyan-l)">your own CI</span>.</p>
+      <div class="say"><em>how good is my support agent on its last 50 conversations?</em></div>
+      <div class="produces"><span class="pk">📦</span><span class="chip">a scorecard (+ a test-suite, your-stack)</span></div></div>
+    <div class="card"><h3><span class="tag">CREATE</span> Create evals</h3>
+      <p>Build the checks yourself, guided, based on your spec.</p>
+      <div class="say"><em>add an eval that checks it never sends a duplicate reply</em></div>
+      <div class="produces"><span class="pk">📦</span><span class="chip">your eval suite (the checks)</span></div></div>
+    <div class="card"><h3><span class="tag">DATA</span> Make a test set</h3>
+      <p>Turn a few examples into a realistic set of test cases.</p>
+      <div class="say"><em>generate tricky test cases for the PR-review agent</em></div>
+      <div class="produces"><span class="pk">📦</span><span class="chip">a dataset of test cases</span></div></div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Evaluate</span></div>
+</section>
+
+<!-- ░░░ 6 · DIAGNOSE ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">DIAGNOSE · 6 / 7</div></div>
+  <h1 class="title"><span class="n">⑥ Diagnose</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— when an eval fails, find out why</span></h1>
+  <div class="row" style="margin-top:8px">
+    <div class="card flex1" style="flex:1.1">
+      <svg width="100%" viewBox="0 0 460 200">
+        <defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs>
+        <rect x="14" y="30" width="150" height="140" rx="10" fill="#0d0916" stroke="#2c2142"/>
+        <text x="30" y="56" font-size="12" fill="#ff8f87" font-family="Inter">✗ failing run</text>
+        <line x1="30" y1="74" x2="150" y2="74" stroke="#2c2142"/><line x1="30" y1="96" x2="150" y2="96" stroke="#2c2142"/><line x1="30" y1="118" x2="150" y2="118" stroke="#2c2142"/>
+        <circle cx="150" cy="120" r="34" fill="none" stroke="url(#dg)" stroke-width="4"/><line x1="174" y1="144" x2="206" y2="176" stroke="url(#dg)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M214 100 L250 100" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#ar)"/>
+        <rect x="258" y="24" width="188" height="152" rx="10" fill="#170f26" stroke="url(#dg)" stroke-width="2"/>
+        <text x="276" y="50" font-size="13" font-weight="800" fill="#ece8f6" font-family="Inter">Diagnosis</text>
+        <text x="276" y="74" font-size="11.5" fill="#9389ac" font-family="Inter">WHAT broke</text>
+        <text x="276" y="94" font-size="11.5" fill="#9389ac" font-family="Inter">WHY · where in the code</text>
+        <text x="276" y="120" font-size="11.5" fill="#67e8f9" font-family="Inter" font-weight="700">★ recommended fix</text>
+        <text x="276" y="140" font-size="11.5" fill="#9389ac" font-family="Inter">2 · alternative fix</text>
+        <text x="276" y="160" font-size="11.5" fill="#9389ac" font-family="Inter">3 · alternative fix</text>
+      </svg>
+    </div>
+    <div class="card flex1">
+      <h3>It explains — it doesn't change anything yet</h3>
+      <p>Takes the failures from evaluate and works out the root cause: what broke, where in the code, and a ranked list of fixes (★ = the one it recommends).</p>
+      <div class="say"><div class="lbl">💬 YOU CAN SAY</div>
+        <em>why did the support agent fail its escalation eval?</em>
+        <em>what's wrong with my agent's approval flow?</em>
+        <em>diagnose the failures from the last evaluation run</em></div>
+      <div class="produces"><span class="pk">📦 PRODUCES</span><span class="chip">a diagnosis report · what · why · ranked fixes</span></div>
+    </div>
+  </div>
+  <div class="footnote"><span>MUTAGENT</span><span>Diagnose</span></div>
+</section>
+
+<!-- ░░░ 7 · IMPROVE ░░░ -->
+<section class="slide">
+  <div class="top"><div class="brand"><img class="mark" src="mutagent-logo.svg" alt=""><span class="wm">MUTAGENT</span></div><div class="pg">IMPROVE · 7 / 7</div></div>
+  <h1 class="title"><span class="n">⑦ Improve</span> <span style="font-size:18px;color:var(--muted);font-weight:600">— apply the fix, then re-check</span></h1>
+  <p class="sub" style="margin-bottom:10px">The <b style="color:var(--ink)">EDD loop</b> is the lifecycle's tight inner cycle — <b style="color:var(--ink)">build → evaluate → diagnose → improve → back to build</b> — running until the eval gate passes.</p>
+  <img src="adl-loop.svg" alt="The ADL cycle with the EDD inner loop" style="display:block;margin:2px auto 12px;max-height:300px;max-width:100%;height:auto">
+  <div class="row">
+    <div class="card flex1">
+      <h3>Loops until it passes — gated by you</h3>
+      <p>Hands the recommended fix to an AI engineer that edits your agent, then re-runs evaluate. It loops — fix → re-build → re-evaluate — until the agent passes. <b>Nothing changes without your go-ahead.</b></p>
+    </div>
+    <div class="card flex1">
+      <div class="say"><div class="lbl">💬 YOU CAN SAY</div>
+        <em>apply the recommended fix to the support-triage agent</em>
+        <em>make the support-triage agent pass its evals</em></div>
+      <div class="produces"><span class="pk">📦 PRODUCES</span><span class="chip">the updated agent + a fresh scorecard</span></div>
+    </div>
+  </div>
+
+  <div class="footnote"><span>MUTAGENT · mutagent.io</span><span>Improve · fin</span></div>
+</section>
+
+</body>
+</html>
