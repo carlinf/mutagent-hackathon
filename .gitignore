@@ -18,3 +18,13 @@ traces/
 
 # os
 .DS_Store
+
+# Mutagent framework — installed locally via `bunx @mutagent/helix init`.
+# Kept on disk (usable), never committed to main — fresh-install is tested separately.
+.claude/
+.codex/
+CLAUDE.md
+AGENTS.md
+package.json
+package-lock.json
+bun.lock
